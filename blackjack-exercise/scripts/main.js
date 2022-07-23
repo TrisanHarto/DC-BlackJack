@@ -16,7 +16,6 @@ window.onload = function() {
   shuffleCards();
 }
 
-
 const dealerHand = document.getElementById("dealer-hand");
 const playerHand = document.getElementById("player-hand");
 const newGame = document.getElementById("deal-button")
@@ -27,7 +26,7 @@ const buildDeck = (rank, suit) => {
   const card = {
     rank: rank,
     suit: suit,
-    pointValue: rank.length == 3 ? 11 : rank.length > 2 ? 10 : rank === 10 ? 10 : rank,
+    pointValue: rank.length == 3 ? 11 : rank.length > 3 ? 10 : rank === 10 ? 10 : rank,
   };
   deck.push(card);
 };
@@ -70,7 +69,6 @@ function startGame() {
       document.getElementById("dealer-hand").append(cardImg);
   }
 
-
 for (let i = 0; i < 2; i++) {
   let cardImg = document.createElement("img");
     let card = deck.pop();
@@ -78,10 +76,8 @@ for (let i = 0; i < 2; i++) {
     playerPoint += getValue(card);
     playerAceSum += checkAce(card);
     document.getElementById("player-hand").append(cardImg);
-    document.getElementById("player-points").innerText = playerPoint;
 }
 
-console.log(playerPoint);
 dealCard = false
 }
 
@@ -97,12 +93,11 @@ function hit() {
   playerPoint += getValue(card);
   playerAceSum += checkAce(card);
   document.getElementById("player-hand").append(cardImg);
-  document.getElementById("player-points").innerText = playerPoint;
 
   setTimeout(busted, 400);
 
   function busted() {
-    if (playerPoint > 21) {
+    if (reduceAce(playerPoint, playerAceSum) > 21) {
       hitMe = false;
       alert("Bust! Game will start over")
       location.reload()
@@ -113,17 +108,6 @@ function hit() {
 document.getElementById("stand-button").addEventListener("click", stay);
 
 function stay () {
-  if (!playerBust) {
-    return;
-  }
-  if (function() {
-    hit(playerPoint) + startGame(playerPoint)
-  }
-    
-    > 21) {
-    playerBust = false;
-  }
-
   while (dealerPoint < 17) {
     let cardImg = document.createElement("img");
     let card = deck.pop();
@@ -132,7 +116,6 @@ function stay () {
     dealerAceSum += checkAce(card);
     document.getElementById("dealer-hand").append(cardImg);
   }
-  console.log(dealerPoint);
   dealerPoint = reduceAce(dealerPoint, dealerAceSum);
   playerPoint = reduceAce(playerPoint, playerAceSum);
 
@@ -157,6 +140,7 @@ function stay () {
   }
   
   document.getElementById("dealer-points").innerText = dealerPoint;
+  document.getElementById("player-points").innerText = playerPoint;
   document.getElementById("messages").innerText = message;
 
   setTimeout(endGame, 400);
@@ -188,3 +172,4 @@ function reduceAce(playerSum, playerAceCount) {
   }
   return playerSum;
 }
+
